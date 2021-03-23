@@ -175,7 +175,7 @@ const toggleSpinner=(show)=>
   //console.log(spinner.classList)
   if(show)
   {
-    spinner.classList.toggle('d-none')
+    spinner.classList.remove('d-none')
   }
   else
   {
