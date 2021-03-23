@@ -11,12 +11,13 @@ let sliders = [];
 // If this key doesn't work
 // Find the name in the url and go to their website
 // to create your own api key
-const KEY = '20786808-2322d7957b4b88c59ff240ce0';
+const KEY = '20786808-2322d7957b4b88c59ff240ce0&q';
 
 // show images 
 const showImages = (images) => {
-  console.log(images)
+  //console.log(images)
   imagesArea.style.display = 'block';
+ 
   gallery.innerHTML = '';
   // show gallery title
   galleryHeader.style.display = 'flex';
@@ -25,28 +26,42 @@ const showImages = (images) => {
     div.className = 'col-lg-3 col-md-4 col-xs-6 img-item mb-2';
     div.innerHTML = ` <img class="img-fluid img-thumbnail" onclick=selectItem(event,"${image.webformatURL}") src="${image.webformatURL}" alt="${image.tags}">`;
     gallery.appendChild(div)
+    toggleSpinner(false);
   })
 
 }
 
 const getImages = (query) => {
-  fetch(`https://pixabay.com/api/?key=${KEY}&q=${query}&image_type=photo&pretty=true`)
- 
+  const url=`https://pixabay.com/api/?key=${KEY}=${query}&image_type=photo`
+  // console.log(url)
+  toggleSpinner(true);
+  fetch(url)
     .then(response => response.json())
     .then(data => showImages(data.hits))
     .catch(err => console.log(err))
+    
 }
 
+
+
 let slideIndex = 0;
+
 const selectItem = (event, img) => {
+  //console.log(event.target,img)
   let element = event.target;
-  element.classList.add('added');
- 
+  //console.log(element.classList)
+  element.classList.toggle('added')
+  //console.log("item: ", sliders.indexOf(img))
   let item = sliders.indexOf(img);
+  
+  
   if (item === -1) {
     sliders.push(img);
-  } else {
-    alert('Hey, Already added !')
+   // element.classList.toggle('added')
+  } else  {
+    // alert('Hey, Already added !')
+    //element.classList.toggle('added')
+    sliders.pop(img);
   }
 }
 var timer
@@ -70,7 +85,7 @@ const createSlider = () => {
   // hide image aria
   imagesArea.style.display = 'none';
   const duration = document.getElementById('duration').value || 1000;
-  console.log(Math.abs(duration))
+  //console.log(Math.abs(duration))
   const positiveDuration=Math.abs(duration)
   sliders.forEach(slide => {
     let item = document.createElement('div')
@@ -96,6 +111,8 @@ const changeItem = index => {
 const changeSlide = (index) => {
 
   const items = document.querySelectorAll('.slider-item');
+  //console.log("slide index:",index)
+  //console.log("length:",items.length)
   if (index < 0) {
     slideIndex = items.length - 1
     index = slideIndex;
@@ -113,7 +130,9 @@ const changeSlide = (index) => {
   items[index].style.display = "block"
 }
 
+
 searchBtn.addEventListener('click', function () {
+  
   document.querySelector('.main').style.display = 'none';
   clearInterval(timer);
   const search = document.getElementById('search');
@@ -125,7 +144,6 @@ searchBtn.addEventListener('click', function () {
 sliderBtn.addEventListener('click', function () {
   createSlider()
 })
-
 
 //enter button add
 
@@ -149,3 +167,18 @@ document.getElementById("duration").addEventListener("keyup", function(event) {
   }
 });
 
+//toggler
+
+const toggleSpinner=(show)=>
+{
+  const spinner=document.getElementById("toggle-spinner")
+  //console.log(spinner.classList)
+  if(show)
+  {
+    spinner.classList.toggle('d-none')
+  }
+  else
+  {
+  spinner.classList.add('d-none')
+}
+}
